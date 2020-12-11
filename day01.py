@@ -1,0 +1,270 @@
+puzzle_input_str = \
+"""
+1544
+1560
+1947
+1659
+1972
+1940
+1977
+1689
+1916
+1638
+1804
+1543
+1789
+545
+968
+1959
+1783
+1869
+1581
+1976
+1859
+1660
+1793
+69
+1653
+1866
+1541
+1920
+1751
+1681
+1829
+2009
+1752
+680
+1864
+1628
+1917
+1876
+2002
+1974
+1827
+1791
+1552
+1669
+1849
+1167
+1744
+1764
+1913
+1782
+1926
+1795
+1738
+1877
+1811
+1746
+1682
+1943
+1761
+1850
+983
+1617
+1901
+1750
+1842
+1588
+1679
+1759
+1994
+1847
+1657
+1981
+1648
+1996
+1572
+1953
+1555
+1665
+1680
+1872
+1826
+1316
+1962
+1893
+1545
+1535
+1895
+1819
+1891
+1919
+1853
+1831
+704
+1978
+1780
+1722
+1652
+1625
+478
+1030
+1985
+1720
+1817
+264
+1988
+1892
+1712
+1222
+1840
+1894
+1906
+1890
+1846
+1939
+1991
+1835
+1799
+1865
+1663
+1908
+1575
+1970
+1956
+1556
+1688
+1558
+1698
+1771
+1807
+1878
+1707
+1770
+1823
+1802
+1930
+1703
+1136
+1910
+1998
+1973
+1611
+1979
+1612
+1838
+1715
+1885
+1879
+1904
+1941
+1734
+1900
+1809
+1691
+1848
+1683
+1754
+1874
+1975
+1896
+1567
+1785
+1644
+1922
+1651
+1046
+1971
+1600
+1933
+1857
+1960
+1948
+1675
+1828
+1633
+1868
+1615
+1884
+1674
+1860
+1775
+995
+1596
+2006
+1737
+1649
+1997
+1767
+1784
+1705
+1664
+1766
+1839
+1533
+1935
+1796
+1781
+1589
+1594
+1987
+1769
+""".split()
+puzzle_input = [int(s) for s in puzzle_input_str]
+
+small_numbers = [num for num in puzzle_input if num <= 1000]
+large_numbers = [num for num in puzzle_input if num > 1000]
+assert len(small_numbers) + len(large_numbers) == len(puzzle_input)
+
+# Puzzle 1
+"""
+--- Day 1: Report Repair ---
+
+After saving Christmas five years in a row, you've decided to take a vacation at a nice resort on a tropical island. 
+Surely, Christmas will go on without you.
+
+The tropical island has its own currency and is entirely cash-only. The gold coins used there have a little picture of
+ a starfish; the locals just call them stars. None of the currency exchanges seem to have heard of them, but somehow,
+  you'll need to find fifty of these coins by the time you arrive so you can pay the deposit on your room.
+
+To save your vacation, you need to get all fifty stars by December 25th.
+
+Collect stars by solving puzzles. Two puzzles will be made available on each day in the Advent calendar;
+ the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!
+
+Before you leave, the Elves in accounting just need you to fix your expense report (your puzzle input); apparently, 
+something isn't quite adding up.
+
+Specifically, they need you to find the two entries that sum to 2020 and then multiply those two numbers together.
+
+For example, suppose your expense report contained the following:
+
+1721
+979
+366
+299
+675
+1456
+
+In this list, the two entries that sum to 2020 are 1721 and 299. Multiplying them together produces 1721 * 299 = 514579,
+ so the correct answer is 514579.
+
+Of course, your expense report is much larger. Find the two entries that sum to 2020; what do you get if you multiply
+ them together?
+
+"""
+solution_found = False
+for small_num in small_numbers:
+    if solution_found:
+        break
+    for large_num in large_numbers:
+        if small_num + large_num == 2020:
+            print(f'{small_num} + {large_num} == 2020, {small_num} times {large_num} == {small_num * large_num}')
+            solution_found = True
+            break
+
+# Puzzle 2
+solution_found = False
+for small_num in small_numbers:
+    if solution_found:
+        break
+    for small_num2 in small_numbers:
+        if solution_found:
+            break
+        for small_num3 in small_numbers:
+            if small_num + small_num2 + small_num3 == 2020:
+                print(f'{small_num}+{small_num2}+{small_num3} == 2020, ' +
+                        f'{small_num}*{small_num2}*{small_num3} =={small_num*small_num2*small_num3}')
+                solution_found = True
+                break
