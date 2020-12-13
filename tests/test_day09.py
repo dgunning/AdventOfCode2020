@@ -25,10 +25,6 @@ test_input=[int(i) for i in splitlines("""
 """)]
 
 
-def test_load_puzzle_input():
-    pass
-
-
 def test_find_outlier():
     outlier = find_outlier(test_input, window_size=5)
     assert outlier == 127
