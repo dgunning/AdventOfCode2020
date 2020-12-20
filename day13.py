@@ -1,5 +1,3 @@
-from tools import get_puzzle_input
-
 """
 --- Day 13: Shuttle Search ---
 
@@ -65,3 +63,195 @@ you'll need to wait for that bus?
 
 To begin, get your puzzle input.
 """
+
+from tools import get_puzzle_input
+import math
+
+
+def get_offset(timestamp, bus):
+    start = timestamp
+    stop = -bus
+    step = -bus
+    for time in range(start, stop, step):
+        if time < 0:
+            return -time
+
+
+def get_next_times(timestamp, bus):
+    return timestamp + get_offset(timestamp, bus)
+
+
+def get_next_buses(timestamp, buses):
+    return [(bus, get_next_times(timestamp, bus)) for bus in buses]
+
+
+def get_earliest_bus(timestamp, buses):
+    next_buses = get_next_buses(timestamp, buses)
+    next_buses.sort(key=lambda b: b[1])
+    bus, next_time = next_buses[0]
+    wait_time = next_time - timestamp
+    return bus, next_time, wait_time
+
+
+def load_schedule(pi):
+    timestamp = int(pi[0])
+    bus_line = pi[1].split(',')
+    bus_numbers = [int(bus) for bus in pi[1].split(',') if not bus == 'x']
+    offsets = []
+    for i in range(len(bus_line)):
+        if bus_line[i] != 'x':
+            offsets.append(i)
+    return timestamp, bus_numbers, offsets
+
+
+"""
+--- Part Two ---
+
+The shuttle company is running a contest: one gold coin for anyone that can find the earliest timestamp such that the first bus ID departs at that time and each subsequent listed bus ID departs at that subsequent minute. (The first line in your input is no longer relevant.)
+
+For example, suppose you have the same list of bus IDs as above:
+
+7,13,x,x,59,x,31,19
+
+An x in the schedule means there are no constraints on what bus IDs must depart at that time.
+
+This means you are looking for the earliest timestamp (called t) such that:
+
+    Bus ID 7 departs at timestamp t.
+    Bus ID 13 departs one minute after timestamp t.
+    There are no requirements or restrictions on departures at two or three minutes after timestamp t.
+    Bus ID 59 departs four minutes after timestamp t.
+    There are no requirements or restrictions on departures at five minutes after timestamp t.
+    Bus ID 31 departs six minutes after timestamp t.
+    Bus ID 19 departs seven minutes after timestamp t.
+
+The only bus departures that matter are the listed bus IDs at their specific offsets from t. Those bus IDs can depart at other times, and other bus IDs can depart at those times. For example, in the list above, because bus ID 19 must depart seven minutes after the timestamp at which bus ID 7 departs, bus ID 7 will always also be departing with bus ID 19 at seven minutes after timestamp t.
+
+In this example, the earliest timestamp at which this occurs is 1068781:
+
+time     bus 7   bus 13  bus 59  bus 31  bus 19
+1068773    .       .       .       .       .
+1068774    D       .       .       .       .
+1068775    .       .       .       .       .
+1068776    .       .       .       .       .
+1068777    .       .       .       .       .
+1068778    .       .       .       .       .
+1068779    .       .       .       .       .
+1068780    .       .       .       .       .
+1068781    D       .       .       .       .
+1068782    .       D       .       .       .
+1068783    .       .       .       .       .
+1068784    .       .       .       .       .
+1068785    .       .       D       .       .
+1068786    .       .       .       .       .
+1068787    .       .       .       D       .
+1068788    D       .       .       .       D
+1068789    .       .       .       .       .
+1068790    .       .       .       .       .
+1068791    .       .       .       .       .
+1068792    .       .       .       .       .
+1068793    .       .       .       .       .
+1068794    .       .       .       .       .
+1068795    D       D       .       .       .
+1068796    .       .       .       .       .
+1068797    .       .       .       .       .
+
+In the above example, bus ID 7 departs at timestamp 1068788 (seven minutes after t). This is fine; 
+the only requirement on that minute is that bus ID 19 departs then, and it does.
+
+Here are some other examples:
+
+    The earliest timestamp that matches the list 17,x,13,19 is 3417.
+    67,7,59,61 first occurs at timestamp 754018.
+    67,x,7,59,61 first occurs at timestamp 779210.
+    67,7,x,59,61 first occurs at timestamp 1261476.
+    1789,37,47,1889 first occurs at timestamp 1202161486.
+
+However, with so many bus IDs in your list, surely the actual earliest timestamp will be larger than 100000000000000!
+
+What is the earliest timestamp such that all of the listed bus IDs depart at offsets matching their positions 
+in the list?
+
+"""
+
+
+def lcm(lst):
+    print(lst)
+    _lcm = lst[0]
+    for i in lst[1:]:
+        _lcm =_lcm * i // math.gcd(_lcm, i)
+    return _lcm
+
+
+def find_offset_timestamp(busline):
+    buses = [int(i) for i in busline.split(',') if i != 'x']
+    offsets = []
+    for i in range(len(busline)):
+        if busline[i] != 'x':
+            offsets.append(int(busline[i]))
+    list_lcm = lcm(buses)
+    bus_zero = buses[0]
+    bus_one = buses[1]
+    offset_one = buses[1]
+    exp = 2
+    timestamp = 0
+    multiple = 0
+    while multiple < list_lcm:
+        multiple = int(math.pow(bus_zero, exp))
+        if multiple < list_lcm:
+            timestamp = multiple
+            exp = exp + 1
+        else:
+            break
+    while True:
+        timestamp = timestamp + bus_zero
+        if timestamp % bus_one == 0:
+            return timestamp
+
+
+    return start_timestamp
+
+
+def find_timestamp_at_matching_offsets(bus_line, timestamp = 0):
+    print("Finding timestamp at offset")
+
+    offsets = []
+    buses = []
+    bus_line = bus_line.split(',')
+    for i in range(len(bus_line)):
+        if bus_line[i] != 'x':
+            buses.append((i, int(bus_line[i])))
+    buses = sorted(buses, key=lambda b: b[1])
+    offset_of_largest, largest_step = buses[-1]
+    bus_numbers = [b[1] for b in buses]
+    start_timestamp = lcm(bus_numbers)
+    print("The lcm is", start_timestamp, "a", len(str(start_timestamp)),
+          "digit number", "start timestamp was", timestamp, "a", len(str(timestamp)), "digit number")
+
+    while True:
+        timestamp = timestamp + largest_step
+        departure_matches = []
+        for bus_and_offset in buses[:-1]:
+            bus_offset, bus = bus_and_offset
+            offset = offset_of_largest - bus_offset
+            check_timestamp = timestamp - offset
+            departed = check_timestamp % bus == 0
+            if not departed:
+                departure_matches.append(False)
+                break
+            departure_matches.append(departed)
+
+        if all(departure_matches):
+            return timestamp - offset_of_largest
+
+
+if __name__ == '__main__':
+    puzzle_input = get_puzzle_input('day13')
+    timestamp, buses, offsets = load_schedule(puzzle_input)
+    print('Offsets is', offsets)
+    bus, next_time, wait = get_earliest_bus(timestamp, buses)
+    print("Next bus is", bus, "at", next_time, "after a wait of", wait,
+          "-- bus * wait is", bus * wait)
+
+    timestamp_at_offset = find_timestamp_at_matching_offsets(puzzle_input[1], timestamp=100000000000003)
+    print("Timestamp at matching offsets is", timestamp_at_offset)

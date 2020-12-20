@@ -55,3 +55,16 @@ def get_puzzle_groups(day):
 
 def clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
+
+
+class Node:
+
+    def __init__(self, value: List):
+        self.value = value
+        self.children = []
+
+    def add_child(self, node):
+        self.children.append(node)
+
+    def is_leaf(self):
+        return len(self.children) == 0
